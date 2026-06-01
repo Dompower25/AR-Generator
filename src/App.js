@@ -54,24 +54,56 @@ function App() {
     return vCard;
   }, []);
 
-  // Функция для генерации QR кода
+  // // Функция для генерации QR кода
+  // const generateQRCode = useCallback(
+  //   async (data) => {
+  //     try {
+  //       setError("");
+  //       const vCardString = generateVCard(data);
+
+  //       // Опции для QR кода
+  //       const options = {
+  //         errorCorrectionLevel: "H",
+  //         type: "image/png",
+  //         quality: 1,
+  //         margin: 2,
+  //         width: 400,
+  //         color: {
+  //           dark: "#000000",
+  //           light: "#FFFFFF",
+  //         },
+  //       };
+
+  //       const qrUrl = await QRCode.toDataURL(vCardString, options);
+  //       setQrCodeUrl(qrUrl);
+  //     } catch (err) {
+  //       console.error("Ошибка генерации QR:", err);
+  //       setError("Ошибка при генерации QR-кода. Проверьте введенные данные.");
+  //     }
+  //   },
+  //   [generateVCard],
+  // );
+
+  // Функция для генерации QR кода с мягкими настройками
   const generateQRCode = useCallback(
     async (data) => {
       try {
         setError("");
         const vCardString = generateVCard(data);
 
-        // Опции для QR кода
+        // Опции для более мягкого QR кода
         const options = {
           errorCorrectionLevel: "H",
           type: "image/png",
           quality: 1,
-          margin: 2,
+          margin: 3, // Увеличен отступ
           width: 400,
           color: {
-            dark: "#000000",
-            light: "#FFFFFF",
+            dark: "#2C3E50", // Вместо черного - мягкий темно-синий
+            light: "#F8F9FA", // Вместо белого - слегка сероватый фон
           },
+          // Добавляем масштабирование для сглаживания
+          scale: 8, // Увеличиваем масштаб для лучшего сглаживания
         };
 
         const qrUrl = await QRCode.toDataURL(vCardString, options);
@@ -261,12 +293,18 @@ function App() {
 
               {qrCodeUrl ? (
                 <>
-                  <div className="qr-container mb-3 p-3 bg-white d-inline-block rounded">
+                  <div className="qr-container mb-3 p-3 d-inline-block rounded">
                     <img
                       src={qrCodeUrl}
                       alt="QR Code"
-                      className="img-fluid"
-                      style={{ maxWidth: "280px", height: "auto" }}
+                      className="img-fluid qr-soft"
+                      style={{
+                        maxWidth: "280px",
+                        height: "auto",
+                        // CSS сглаживание
+                        imageRendering: "crisp-edges", // Для четкости
+                        borderRadius: "12px", // Скругление углов самого изображения
+                      }}
                     />
                   </div>
 
